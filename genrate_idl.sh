@@ -1,0 +1,1 @@
+kitex -module github.com/AI-MyPresenceing/coach-idl idl/chat_management.thrift
