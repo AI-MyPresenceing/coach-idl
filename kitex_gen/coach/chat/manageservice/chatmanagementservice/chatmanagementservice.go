@@ -56,6 +56,20 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"DeleteChatObject": kitex.NewMethodInfo(
+		deleteChatObjectHandler,
+		newChatManagementServiceDeleteChatObjectArgs,
+		newChatManagementServiceDeleteChatObjectResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetChatSessionList": kitex.NewMethodInfo(
+		getChatSessionListHandler,
+		newChatManagementServiceGetChatSessionListArgs,
+		newChatManagementServiceGetChatSessionListResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 }
 
 var (
@@ -230,6 +244,42 @@ func newChatManagementServiceGetFileListByMessageIdResult() interface{} {
 	return manageservice.NewChatManagementServiceGetFileListByMessageIdResult()
 }
 
+func deleteChatObjectHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*manageservice.ChatManagementServiceDeleteChatObjectArgs)
+	realResult := result.(*manageservice.ChatManagementServiceDeleteChatObjectResult)
+	success, err := handler.(manageservice.ChatManagementService).DeleteChatObject(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newChatManagementServiceDeleteChatObjectArgs() interface{} {
+	return manageservice.NewChatManagementServiceDeleteChatObjectArgs()
+}
+
+func newChatManagementServiceDeleteChatObjectResult() interface{} {
+	return manageservice.NewChatManagementServiceDeleteChatObjectResult()
+}
+
+func getChatSessionListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*manageservice.ChatManagementServiceGetChatSessionListArgs)
+	realResult := result.(*manageservice.ChatManagementServiceGetChatSessionListResult)
+	success, err := handler.(manageservice.ChatManagementService).GetChatSessionList(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newChatManagementServiceGetChatSessionListArgs() interface{} {
+	return manageservice.NewChatManagementServiceGetChatSessionListArgs()
+}
+
+func newChatManagementServiceGetChatSessionListResult() interface{} {
+	return manageservice.NewChatManagementServiceGetChatSessionListResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -295,6 +345,26 @@ func (p *kClient) GetFileListByMessageId(ctx context.Context, req *manageservice
 	_args.Req = req
 	var _result manageservice.ChatManagementServiceGetFileListByMessageIdResult
 	if err = p.c.Call(ctx, "GetFileListByMessageId", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteChatObject(ctx context.Context, req *manageservice.DeleteChatObjectReq) (r *manageservice.DeleteChatObjectResp, err error) {
+	var _args manageservice.ChatManagementServiceDeleteChatObjectArgs
+	_args.Req = req
+	var _result manageservice.ChatManagementServiceDeleteChatObjectResult
+	if err = p.c.Call(ctx, "DeleteChatObject", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetChatSessionList(ctx context.Context, req *manageservice.GetChatSessionListReq) (r *manageservice.GetChatSessionListResp, err error) {
+	var _args manageservice.ChatManagementServiceGetChatSessionListArgs
+	_args.Req = req
+	var _result manageservice.ChatManagementServiceGetChatSessionListResult
+	if err = p.c.Call(ctx, "GetChatSessionList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

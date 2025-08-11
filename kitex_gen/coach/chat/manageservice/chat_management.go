@@ -9,10 +9,12 @@ import (
 )
 
 type ChatItem struct {
-	Id      int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
-	ChatId  string `thrift:"chat_id,2" frugal:"2,default,string" json:"chat_id"`
-	Role    string `thrift:"role,3" frugal:"3,default,string" json:"role"`
-	Content string `thrift:"content,4" frugal:"4,default,string" json:"content"`
+	Id        int64    `thrift:"id,1" frugal:"1,default,i64" json:"id"`
+	SessionId string   `thrift:"session_id,2" frugal:"2,default,string" json:"session_id"`
+	Role      string   `thrift:"role,3" frugal:"3,default,string" json:"role"`
+	Content   string   `thrift:"content,4" frugal:"4,default,string" json:"content"`
+	MessageId string   `thrift:"message_id,5" frugal:"5,default,string" json:"message_id"`
+	FileIds   []string `thrift:"file_ids,6,optional" frugal:"6,optional,list<string>" json:"file_ids,omitempty"`
 }
 
 func NewChatItem() *ChatItem {
@@ -26,8 +28,8 @@ func (p *ChatItem) GetId() (v int64) {
 	return p.Id
 }
 
-func (p *ChatItem) GetChatId() (v string) {
-	return p.ChatId
+func (p *ChatItem) GetSessionId() (v string) {
+	return p.SessionId
 }
 
 func (p *ChatItem) GetRole() (v string) {
@@ -37,17 +39,40 @@ func (p *ChatItem) GetRole() (v string) {
 func (p *ChatItem) GetContent() (v string) {
 	return p.Content
 }
+
+func (p *ChatItem) GetMessageId() (v string) {
+	return p.MessageId
+}
+
+var ChatItem_FileIds_DEFAULT []string
+
+func (p *ChatItem) GetFileIds() (v []string) {
+	if !p.IsSetFileIds() {
+		return ChatItem_FileIds_DEFAULT
+	}
+	return p.FileIds
+}
 func (p *ChatItem) SetId(val int64) {
 	p.Id = val
 }
-func (p *ChatItem) SetChatId(val string) {
-	p.ChatId = val
+func (p *ChatItem) SetSessionId(val string) {
+	p.SessionId = val
 }
 func (p *ChatItem) SetRole(val string) {
 	p.Role = val
 }
 func (p *ChatItem) SetContent(val string) {
 	p.Content = val
+}
+func (p *ChatItem) SetMessageId(val string) {
+	p.MessageId = val
+}
+func (p *ChatItem) SetFileIds(val []string) {
+	p.FileIds = val
+}
+
+func (p *ChatItem) IsSetFileIds() bool {
+	return p.FileIds != nil
 }
 
 func (p *ChatItem) String() string {
@@ -59,9 +84,11 @@ func (p *ChatItem) String() string {
 
 var fieldIDToName_ChatItem = map[int16]string{
 	1: "id",
-	2: "chat_id",
+	2: "session_id",
 	3: "role",
 	4: "content",
+	5: "message_id",
+	6: "file_ids",
 }
 
 type ChatObject struct {
@@ -134,6 +161,7 @@ type FileItem struct {
 	FileUrl  string `thrift:"file_url,2" frugal:"2,default,string" json:"file_url"`
 	FileName string `thrift:"file_name,3" frugal:"3,default,string" json:"file_name"`
 	FileType string `thrift:"file_type,4" frugal:"4,default,string" json:"file_type"`
+	FileSize int64  `thrift:"file_size,5" frugal:"5,default,i64" json:"file_size"`
 }
 
 func NewFileItem() *FileItem {
@@ -158,6 +186,10 @@ func (p *FileItem) GetFileName() (v string) {
 func (p *FileItem) GetFileType() (v string) {
 	return p.FileType
 }
+
+func (p *FileItem) GetFileSize() (v int64) {
+	return p.FileSize
+}
 func (p *FileItem) SetFileId(val string) {
 	p.FileId = val
 }
@@ -169,6 +201,9 @@ func (p *FileItem) SetFileName(val string) {
 }
 func (p *FileItem) SetFileType(val string) {
 	p.FileType = val
+}
+func (p *FileItem) SetFileSize(val int64) {
+	p.FileSize = val
 }
 
 func (p *FileItem) String() string {
@@ -183,6 +218,7 @@ var fieldIDToName_FileItem = map[int16]string{
 	2: "file_url",
 	3: "file_name",
 	4: "file_type",
+	5: "file_size",
 }
 
 type GetChatObjectListReq struct {
@@ -262,7 +298,7 @@ var fieldIDToName_GetChatObjectListResp = map[int16]string{
 }
 
 type GetChatListByIdReq struct {
-	ChatId string `thrift:"chat_id,1,required" frugal:"1,required,string" json:"chat_id"`
+	SessionId string `thrift:"session_id,1,required" frugal:"1,required,string" json:"session_id"`
 }
 
 func NewGetChatListByIdReq() *GetChatListByIdReq {
@@ -272,11 +308,11 @@ func NewGetChatListByIdReq() *GetChatListByIdReq {
 func (p *GetChatListByIdReq) InitDefault() {
 }
 
-func (p *GetChatListByIdReq) GetChatId() (v string) {
-	return p.ChatId
+func (p *GetChatListByIdReq) GetSessionId() (v string) {
+	return p.SessionId
 }
-func (p *GetChatListByIdReq) SetChatId(val string) {
-	p.ChatId = val
+func (p *GetChatListByIdReq) SetSessionId(val string) {
+	p.SessionId = val
 }
 
 func (p *GetChatListByIdReq) String() string {
@@ -287,7 +323,7 @@ func (p *GetChatListByIdReq) String() string {
 }
 
 var fieldIDToName_GetChatListByIdReq = map[int16]string{
-	1: "chat_id",
+	1: "session_id",
 }
 
 type GetChatListByIdResp struct {
@@ -338,8 +374,9 @@ var fieldIDToName_GetChatListByIdResp = map[int16]string{
 }
 
 type CreateChatItemRsp struct {
-	ChatId   string         `thrift:"chat_id,1" frugal:"1,default,string" json:"chat_id"`
-	BaseResp *base.BaseResp `thrift:"baseResp,255" frugal:"255,default,base.BaseResp" json:"baseResp"`
+	SessionId string         `thrift:"session_id,1" frugal:"1,default,string" json:"session_id"`
+	MessageId string         `thrift:"message_id,2" frugal:"2,default,string" json:"message_id"`
+	BaseResp  *base.BaseResp `thrift:"baseResp,255" frugal:"255,default,base.BaseResp" json:"baseResp"`
 }
 
 func NewCreateChatItemRsp() *CreateChatItemRsp {
@@ -349,8 +386,12 @@ func NewCreateChatItemRsp() *CreateChatItemRsp {
 func (p *CreateChatItemRsp) InitDefault() {
 }
 
-func (p *CreateChatItemRsp) GetChatId() (v string) {
-	return p.ChatId
+func (p *CreateChatItemRsp) GetSessionId() (v string) {
+	return p.SessionId
+}
+
+func (p *CreateChatItemRsp) GetMessageId() (v string) {
+	return p.MessageId
 }
 
 var CreateChatItemRsp_BaseResp_DEFAULT *base.BaseResp
@@ -361,8 +402,11 @@ func (p *CreateChatItemRsp) GetBaseResp() (v *base.BaseResp) {
 	}
 	return p.BaseResp
 }
-func (p *CreateChatItemRsp) SetChatId(val string) {
-	p.ChatId = val
+func (p *CreateChatItemRsp) SetSessionId(val string) {
+	p.SessionId = val
+}
+func (p *CreateChatItemRsp) SetMessageId(val string) {
+	p.MessageId = val
 }
 func (p *CreateChatItemRsp) SetBaseResp(val *base.BaseResp) {
 	p.BaseResp = val
@@ -380,7 +424,148 @@ func (p *CreateChatItemRsp) String() string {
 }
 
 var fieldIDToName_CreateChatItemRsp = map[int16]string{
-	1:   "chat_id",
+	1:   "session_id",
+	2:   "message_id",
+	255: "baseResp",
+}
+
+type ChatSessionDTO struct {
+	Id        int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
+	SessionId string `thrift:"session_id,2" frugal:"2,default,string" json:"session_id"`
+	Title     string `thrift:"title,3" frugal:"3,default,string" json:"title"`
+	Status    string `thrift:"status,4" frugal:"4,default,string" json:"status"`
+	CreatedAt string `thrift:"created_at,5" frugal:"5,default,string" json:"created_at"`
+	UpdatedAt string `thrift:"updated_at,6" frugal:"6,default,string" json:"updated_at"`
+}
+
+func NewChatSessionDTO() *ChatSessionDTO {
+	return &ChatSessionDTO{}
+}
+
+func (p *ChatSessionDTO) InitDefault() {
+}
+
+func (p *ChatSessionDTO) GetId() (v int64) {
+	return p.Id
+}
+
+func (p *ChatSessionDTO) GetSessionId() (v string) {
+	return p.SessionId
+}
+
+func (p *ChatSessionDTO) GetTitle() (v string) {
+	return p.Title
+}
+
+func (p *ChatSessionDTO) GetStatus() (v string) {
+	return p.Status
+}
+
+func (p *ChatSessionDTO) GetCreatedAt() (v string) {
+	return p.CreatedAt
+}
+
+func (p *ChatSessionDTO) GetUpdatedAt() (v string) {
+	return p.UpdatedAt
+}
+func (p *ChatSessionDTO) SetId(val int64) {
+	p.Id = val
+}
+func (p *ChatSessionDTO) SetSessionId(val string) {
+	p.SessionId = val
+}
+func (p *ChatSessionDTO) SetTitle(val string) {
+	p.Title = val
+}
+func (p *ChatSessionDTO) SetStatus(val string) {
+	p.Status = val
+}
+func (p *ChatSessionDTO) SetCreatedAt(val string) {
+	p.CreatedAt = val
+}
+func (p *ChatSessionDTO) SetUpdatedAt(val string) {
+	p.UpdatedAt = val
+}
+
+func (p *ChatSessionDTO) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ChatSessionDTO(%+v)", *p)
+}
+
+var fieldIDToName_ChatSessionDTO = map[int16]string{
+	1: "id",
+	2: "session_id",
+	3: "title",
+	4: "status",
+	5: "created_at",
+	6: "updated_at",
+}
+
+type GetChatSessionListReq struct {
+}
+
+func NewGetChatSessionListReq() *GetChatSessionListReq {
+	return &GetChatSessionListReq{}
+}
+
+func (p *GetChatSessionListReq) InitDefault() {
+}
+
+func (p *GetChatSessionListReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetChatSessionListReq(%+v)", *p)
+}
+
+var fieldIDToName_GetChatSessionListReq = map[int16]string{}
+
+type GetChatSessionListResp struct {
+	Sessions []*ChatSessionDTO `thrift:"sessions,1" frugal:"1,default,list<ChatSessionDTO>" json:"sessions"`
+	BaseResp *base.BaseResp    `thrift:"baseResp,255" frugal:"255,default,base.BaseResp" json:"baseResp"`
+}
+
+func NewGetChatSessionListResp() *GetChatSessionListResp {
+	return &GetChatSessionListResp{}
+}
+
+func (p *GetChatSessionListResp) InitDefault() {
+}
+
+func (p *GetChatSessionListResp) GetSessions() (v []*ChatSessionDTO) {
+	return p.Sessions
+}
+
+var GetChatSessionListResp_BaseResp_DEFAULT *base.BaseResp
+
+func (p *GetChatSessionListResp) GetBaseResp() (v *base.BaseResp) {
+	if !p.IsSetBaseResp() {
+		return GetChatSessionListResp_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *GetChatSessionListResp) SetSessions(val []*ChatSessionDTO) {
+	p.Sessions = val
+}
+func (p *GetChatSessionListResp) SetBaseResp(val *base.BaseResp) {
+	p.BaseResp = val
+}
+
+func (p *GetChatSessionListResp) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *GetChatSessionListResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetChatSessionListResp(%+v)", *p)
+}
+
+var fieldIDToName_GetChatSessionListResp = map[int16]string{
+	1:   "sessions",
 	255: "baseResp",
 }
 
@@ -563,6 +748,82 @@ var fieldIDToName_GetFileListByMessageIdResp = map[int16]string{
 	255: "baseResp",
 }
 
+type DeleteChatObjectReq struct {
+	Id string `thrift:"id,1,required" frugal:"1,required,string" json:"id"`
+}
+
+func NewDeleteChatObjectReq() *DeleteChatObjectReq {
+	return &DeleteChatObjectReq{}
+}
+
+func (p *DeleteChatObjectReq) InitDefault() {
+}
+
+func (p *DeleteChatObjectReq) GetId() (v string) {
+	return p.Id
+}
+func (p *DeleteChatObjectReq) SetId(val string) {
+	p.Id = val
+}
+
+func (p *DeleteChatObjectReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteChatObjectReq(%+v)", *p)
+}
+
+var fieldIDToName_DeleteChatObjectReq = map[int16]string{
+	1: "id",
+}
+
+type DeleteChatObjectResp struct {
+	Success  bool           `thrift:"success,1" frugal:"1,default,bool" json:"success"`
+	BaseResp *base.BaseResp `thrift:"baseResp,255" frugal:"255,default,base.BaseResp" json:"baseResp"`
+}
+
+func NewDeleteChatObjectResp() *DeleteChatObjectResp {
+	return &DeleteChatObjectResp{}
+}
+
+func (p *DeleteChatObjectResp) InitDefault() {
+}
+
+func (p *DeleteChatObjectResp) GetSuccess() (v bool) {
+	return p.Success
+}
+
+var DeleteChatObjectResp_BaseResp_DEFAULT *base.BaseResp
+
+func (p *DeleteChatObjectResp) GetBaseResp() (v *base.BaseResp) {
+	if !p.IsSetBaseResp() {
+		return DeleteChatObjectResp_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *DeleteChatObjectResp) SetSuccess(val bool) {
+	p.Success = val
+}
+func (p *DeleteChatObjectResp) SetBaseResp(val *base.BaseResp) {
+	p.BaseResp = val
+}
+
+func (p *DeleteChatObjectResp) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *DeleteChatObjectResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteChatObjectResp(%+v)", *p)
+}
+
+var fieldIDToName_DeleteChatObjectResp = map[int16]string{
+	1:   "success",
+	255: "baseResp",
+}
+
 type ChatManagementService interface {
 	GetChatObjectList(ctx context.Context, req *GetChatObjectListReq) (r *GetChatObjectListResp, err error)
 
@@ -575,6 +836,10 @@ type ChatManagementService interface {
 	UploadFile(ctx context.Context, req *UploadFileReq) (r *UploadFileResp, err error)
 
 	GetFileListByMessageId(ctx context.Context, req *GetFileListByMessageIdReq) (r *GetFileListByMessageIdResp, err error)
+
+	DeleteChatObject(ctx context.Context, req *DeleteChatObjectReq) (r *DeleteChatObjectResp, err error)
+
+	GetChatSessionList(ctx context.Context, req *GetChatSessionListReq) (r *GetChatSessionListResp, err error)
 }
 
 type ChatManagementServiceGetChatObjectListArgs struct {
@@ -1030,5 +1295,157 @@ func (p *ChatManagementServiceGetFileListByMessageIdResult) String() string {
 }
 
 var fieldIDToName_ChatManagementServiceGetFileListByMessageIdResult = map[int16]string{
+	0: "success",
+}
+
+type ChatManagementServiceDeleteChatObjectArgs struct {
+	Req *DeleteChatObjectReq `thrift:"req,1" frugal:"1,default,DeleteChatObjectReq" json:"req"`
+}
+
+func NewChatManagementServiceDeleteChatObjectArgs() *ChatManagementServiceDeleteChatObjectArgs {
+	return &ChatManagementServiceDeleteChatObjectArgs{}
+}
+
+func (p *ChatManagementServiceDeleteChatObjectArgs) InitDefault() {
+}
+
+var ChatManagementServiceDeleteChatObjectArgs_Req_DEFAULT *DeleteChatObjectReq
+
+func (p *ChatManagementServiceDeleteChatObjectArgs) GetReq() (v *DeleteChatObjectReq) {
+	if !p.IsSetReq() {
+		return ChatManagementServiceDeleteChatObjectArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *ChatManagementServiceDeleteChatObjectArgs) SetReq(val *DeleteChatObjectReq) {
+	p.Req = val
+}
+
+func (p *ChatManagementServiceDeleteChatObjectArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ChatManagementServiceDeleteChatObjectArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ChatManagementServiceDeleteChatObjectArgs(%+v)", *p)
+}
+
+var fieldIDToName_ChatManagementServiceDeleteChatObjectArgs = map[int16]string{
+	1: "req",
+}
+
+type ChatManagementServiceDeleteChatObjectResult struct {
+	Success *DeleteChatObjectResp `thrift:"success,0,optional" frugal:"0,optional,DeleteChatObjectResp" json:"success,omitempty"`
+}
+
+func NewChatManagementServiceDeleteChatObjectResult() *ChatManagementServiceDeleteChatObjectResult {
+	return &ChatManagementServiceDeleteChatObjectResult{}
+}
+
+func (p *ChatManagementServiceDeleteChatObjectResult) InitDefault() {
+}
+
+var ChatManagementServiceDeleteChatObjectResult_Success_DEFAULT *DeleteChatObjectResp
+
+func (p *ChatManagementServiceDeleteChatObjectResult) GetSuccess() (v *DeleteChatObjectResp) {
+	if !p.IsSetSuccess() {
+		return ChatManagementServiceDeleteChatObjectResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *ChatManagementServiceDeleteChatObjectResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DeleteChatObjectResp)
+}
+
+func (p *ChatManagementServiceDeleteChatObjectResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ChatManagementServiceDeleteChatObjectResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ChatManagementServiceDeleteChatObjectResult(%+v)", *p)
+}
+
+var fieldIDToName_ChatManagementServiceDeleteChatObjectResult = map[int16]string{
+	0: "success",
+}
+
+type ChatManagementServiceGetChatSessionListArgs struct {
+	Req *GetChatSessionListReq `thrift:"req,1" frugal:"1,default,GetChatSessionListReq" json:"req"`
+}
+
+func NewChatManagementServiceGetChatSessionListArgs() *ChatManagementServiceGetChatSessionListArgs {
+	return &ChatManagementServiceGetChatSessionListArgs{}
+}
+
+func (p *ChatManagementServiceGetChatSessionListArgs) InitDefault() {
+}
+
+var ChatManagementServiceGetChatSessionListArgs_Req_DEFAULT *GetChatSessionListReq
+
+func (p *ChatManagementServiceGetChatSessionListArgs) GetReq() (v *GetChatSessionListReq) {
+	if !p.IsSetReq() {
+		return ChatManagementServiceGetChatSessionListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *ChatManagementServiceGetChatSessionListArgs) SetReq(val *GetChatSessionListReq) {
+	p.Req = val
+}
+
+func (p *ChatManagementServiceGetChatSessionListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ChatManagementServiceGetChatSessionListArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ChatManagementServiceGetChatSessionListArgs(%+v)", *p)
+}
+
+var fieldIDToName_ChatManagementServiceGetChatSessionListArgs = map[int16]string{
+	1: "req",
+}
+
+type ChatManagementServiceGetChatSessionListResult struct {
+	Success *GetChatSessionListResp `thrift:"success,0,optional" frugal:"0,optional,GetChatSessionListResp" json:"success,omitempty"`
+}
+
+func NewChatManagementServiceGetChatSessionListResult() *ChatManagementServiceGetChatSessionListResult {
+	return &ChatManagementServiceGetChatSessionListResult{}
+}
+
+func (p *ChatManagementServiceGetChatSessionListResult) InitDefault() {
+}
+
+var ChatManagementServiceGetChatSessionListResult_Success_DEFAULT *GetChatSessionListResp
+
+func (p *ChatManagementServiceGetChatSessionListResult) GetSuccess() (v *GetChatSessionListResp) {
+	if !p.IsSetSuccess() {
+		return ChatManagementServiceGetChatSessionListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *ChatManagementServiceGetChatSessionListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*GetChatSessionListResp)
+}
+
+func (p *ChatManagementServiceGetChatSessionListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ChatManagementServiceGetChatSessionListResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ChatManagementServiceGetChatSessionListResult(%+v)", *p)
+}
+
+var fieldIDToName_ChatManagementServiceGetChatSessionListResult = map[int16]string{
 	0: "success",
 }

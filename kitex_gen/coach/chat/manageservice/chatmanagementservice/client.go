@@ -18,6 +18,8 @@ type Client interface {
 	CreateChatItem(ctx context.Context, req *manageservice.ChatItem, callOptions ...callopt.Option) (r *manageservice.CreateChatItemRsp, err error)
 	UploadFile(ctx context.Context, req *manageservice.UploadFileReq, callOptions ...callopt.Option) (r *manageservice.UploadFileResp, err error)
 	GetFileListByMessageId(ctx context.Context, req *manageservice.GetFileListByMessageIdReq, callOptions ...callopt.Option) (r *manageservice.GetFileListByMessageIdResp, err error)
+	DeleteChatObject(ctx context.Context, req *manageservice.DeleteChatObjectReq, callOptions ...callopt.Option) (r *manageservice.DeleteChatObjectResp, err error)
+	GetChatSessionList(ctx context.Context, req *manageservice.GetChatSessionListReq, callOptions ...callopt.Option) (r *manageservice.GetChatSessionListResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -77,4 +79,14 @@ func (p *kChatManagementServiceClient) UploadFile(ctx context.Context, req *mana
 func (p *kChatManagementServiceClient) GetFileListByMessageId(ctx context.Context, req *manageservice.GetFileListByMessageIdReq, callOptions ...callopt.Option) (r *manageservice.GetFileListByMessageIdResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFileListByMessageId(ctx, req)
+}
+
+func (p *kChatManagementServiceClient) DeleteChatObject(ctx context.Context, req *manageservice.DeleteChatObjectReq, callOptions ...callopt.Option) (r *manageservice.DeleteChatObjectResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteChatObject(ctx, req)
+}
+
+func (p *kChatManagementServiceClient) GetChatSessionList(ctx context.Context, req *manageservice.GetChatSessionListReq, callOptions ...callopt.Option) (r *manageservice.GetChatSessionListResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetChatSessionList(ctx, req)
 }
