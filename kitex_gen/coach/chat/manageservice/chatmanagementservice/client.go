@@ -16,6 +16,7 @@ type Client interface {
 	EditChatObject(ctx context.Context, req *manageservice.ChatObject, callOptions ...callopt.Option) (r *base.BaseResp, err error)
 	GetChatListById(ctx context.Context, req *manageservice.GetChatListByIdReq, callOptions ...callopt.Option) (r *manageservice.GetChatListByIdResp, err error)
 	CreateChatItem(ctx context.Context, req *manageservice.ChatItem, callOptions ...callopt.Option) (r *manageservice.CreateChatItemRsp, err error)
+	CreateChatSession(ctx context.Context, req *manageservice.CreateChatSessionReq, callOptions ...callopt.Option) (r *manageservice.CreateChatSessionResp, err error)
 	UploadFile(ctx context.Context, req *manageservice.UploadFileReq, callOptions ...callopt.Option) (r *manageservice.UploadFileResp, err error)
 	GetFileListByMessageId(ctx context.Context, req *manageservice.GetFileListByMessageIdReq, callOptions ...callopt.Option) (r *manageservice.GetFileListByMessageIdResp, err error)
 	DeleteChatObject(ctx context.Context, req *manageservice.DeleteChatObjectReq, callOptions ...callopt.Option) (r *manageservice.DeleteChatObjectResp, err error)
@@ -69,6 +70,11 @@ func (p *kChatManagementServiceClient) GetChatListById(ctx context.Context, req 
 func (p *kChatManagementServiceClient) CreateChatItem(ctx context.Context, req *manageservice.ChatItem, callOptions ...callopt.Option) (r *manageservice.CreateChatItemRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CreateChatItem(ctx, req)
+}
+
+func (p *kChatManagementServiceClient) CreateChatSession(ctx context.Context, req *manageservice.CreateChatSessionReq, callOptions ...callopt.Option) (r *manageservice.CreateChatSessionResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CreateChatSession(ctx, req)
 }
 
 func (p *kChatManagementServiceClient) UploadFile(ctx context.Context, req *manageservice.UploadFileReq, callOptions ...callopt.Option) (r *manageservice.UploadFileResp, err error) {

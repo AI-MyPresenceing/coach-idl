@@ -42,6 +42,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"CreateChatSession": kitex.NewMethodInfo(
+		createChatSessionHandler,
+		newChatManagementServiceCreateChatSessionArgs,
+		newChatManagementServiceCreateChatSessionResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"UploadFile": kitex.NewMethodInfo(
 		uploadFileHandler,
 		newChatManagementServiceUploadFileArgs,
@@ -208,6 +215,24 @@ func newChatManagementServiceCreateChatItemResult() interface{} {
 	return manageservice.NewChatManagementServiceCreateChatItemResult()
 }
 
+func createChatSessionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*manageservice.ChatManagementServiceCreateChatSessionArgs)
+	realResult := result.(*manageservice.ChatManagementServiceCreateChatSessionResult)
+	success, err := handler.(manageservice.ChatManagementService).CreateChatSession(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newChatManagementServiceCreateChatSessionArgs() interface{} {
+	return manageservice.NewChatManagementServiceCreateChatSessionArgs()
+}
+
+func newChatManagementServiceCreateChatSessionResult() interface{} {
+	return manageservice.NewChatManagementServiceCreateChatSessionResult()
+}
+
 func uploadFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*manageservice.ChatManagementServiceUploadFileArgs)
 	realResult := result.(*manageservice.ChatManagementServiceUploadFileResult)
@@ -325,6 +350,16 @@ func (p *kClient) CreateChatItem(ctx context.Context, req *manageservice.ChatIte
 	_args.Req = req
 	var _result manageservice.ChatManagementServiceCreateChatItemResult
 	if err = p.c.Call(ctx, "CreateChatItem", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CreateChatSession(ctx context.Context, req *manageservice.CreateChatSessionReq) (r *manageservice.CreateChatSessionResp, err error) {
+	var _args manageservice.ChatManagementServiceCreateChatSessionArgs
+	_args.Req = req
+	var _result manageservice.ChatManagementServiceCreateChatSessionResult
+	if err = p.c.Call(ctx, "CreateChatSession", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

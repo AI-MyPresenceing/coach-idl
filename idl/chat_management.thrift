@@ -8,11 +8,13 @@ struct ChatItem {
     3: string role;
     4: string content;
     5: string message_id;  // 新增：唯一标识每个对话内容
-    6: optional list<string> file_ids  // 新增：绑定的文件ID列表
+    6: optional list<string> file_ids;  // 新增：绑定的文件ID列表
+    7: optional string object_id; // 新增：关联的聊天对象ID
+    8: optional string title; // 新增：会话标题
 }
 
 struct ChatObject {
-    1: i64 id;
+    1: string id;
     2: string name;
     3: string avatar;
     4: string position;
@@ -67,8 +69,31 @@ struct ChatSessionDTO {
     6: string updated_at
 }
 
+// 创建会话请求
+struct CreateChatSessionReq {
+    1: required string title
+    2: required string object_id
+    3: optional string persona_name
+    4: optional string goal
+    5: optional string user_query
+    6: optional string personality
+    7: optional string relationship
+    8: optional list<string> file_ids
+}
+
+// 创建会话响应
+struct CreateChatSessionResp {
+    1: string session_id
+    2: string title
+    3: string object_id
+    4: string created_at
+    255: base.BaseResp baseResp
+}
+
 // 获取会话列表请求/响应
-struct GetChatSessionListReq {}
+struct GetChatSessionListReq {
+    1: optional string object_id
+}
 
 struct GetChatSessionListResp {
     1: list<ChatSessionDTO> sessions
@@ -121,6 +146,8 @@ service ChatManagementService {
     GetChatListByIdResp GetChatListById(1: GetChatListByIdReq req)
     // 新增聊天内容
     CreateChatItemRsp CreateChatItem(1: ChatItem req)
+    // 创建新会话
+    CreateChatSessionResp CreateChatSession(1: CreateChatSessionReq req)
     // 上传文件（图片、文档）
     UploadFileResp UploadFile(1: UploadFileReq req)
     // 获取文件列表
