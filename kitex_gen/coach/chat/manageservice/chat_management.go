@@ -5,7 +5,7 @@ package manageservice
 import (
 	"context"
 	"fmt"
-	"github.com/AI-MyPresenceing/coach-idl/kitex_gen/coach/chat/base"
+	"github.com/AI-MyPresenceing/coach-idl/kitex_gen/coach/common/base"
 )
 
 type ChatItem struct {
@@ -128,11 +128,15 @@ var fieldIDToName_ChatItem = map[int16]string{
 }
 
 type ChatObject struct {
-	Id       string `thrift:"id,1" frugal:"1,default,string" json:"id"`
-	Name     string `thrift:"name,2" frugal:"2,default,string" json:"name"`
-	Avatar   string `thrift:"avatar,3" frugal:"3,default,string" json:"avatar"`
-	Position string `thrift:"position,4" frugal:"4,default,string" json:"position"`
-	Relation string `thrift:"relation,5" frugal:"5,default,string" json:"relation"`
+	Id          string   `thrift:"id,1" frugal:"1,default,string" json:"id"`
+	Name        string   `thrift:"name,2" frugal:"2,default,string" json:"name"`
+	Avatar      string   `thrift:"avatar,3" frugal:"3,default,string" json:"avatar"`
+	Position    string   `thrift:"position,4" frugal:"4,default,string" json:"position"`
+	Relation    string   `thrift:"relation,5" frugal:"5,default,string" json:"relation"`
+	CoreNeeds   *string  `thrift:"core_needs,6,optional" frugal:"6,optional,string" json:"core_needs,omitempty"`
+	Personality *string  `thrift:"personality,7,optional" frugal:"7,optional,string" json:"personality,omitempty"`
+	Tags        []string `thrift:"tags,8,optional" frugal:"8,optional,list<string>" json:"tags,omitempty"`
+	UserId      string   `thrift:"userId,9,required" frugal:"9,required,string" json:"userId"`
 }
 
 func NewChatObject() *ChatObject {
@@ -161,6 +165,37 @@ func (p *ChatObject) GetPosition() (v string) {
 func (p *ChatObject) GetRelation() (v string) {
 	return p.Relation
 }
+
+var ChatObject_CoreNeeds_DEFAULT string
+
+func (p *ChatObject) GetCoreNeeds() (v string) {
+	if !p.IsSetCoreNeeds() {
+		return ChatObject_CoreNeeds_DEFAULT
+	}
+	return *p.CoreNeeds
+}
+
+var ChatObject_Personality_DEFAULT string
+
+func (p *ChatObject) GetPersonality() (v string) {
+	if !p.IsSetPersonality() {
+		return ChatObject_Personality_DEFAULT
+	}
+	return *p.Personality
+}
+
+var ChatObject_Tags_DEFAULT []string
+
+func (p *ChatObject) GetTags() (v []string) {
+	if !p.IsSetTags() {
+		return ChatObject_Tags_DEFAULT
+	}
+	return p.Tags
+}
+
+func (p *ChatObject) GetUserId() (v string) {
+	return p.UserId
+}
 func (p *ChatObject) SetId(val string) {
 	p.Id = val
 }
@@ -176,6 +211,30 @@ func (p *ChatObject) SetPosition(val string) {
 func (p *ChatObject) SetRelation(val string) {
 	p.Relation = val
 }
+func (p *ChatObject) SetCoreNeeds(val *string) {
+	p.CoreNeeds = val
+}
+func (p *ChatObject) SetPersonality(val *string) {
+	p.Personality = val
+}
+func (p *ChatObject) SetTags(val []string) {
+	p.Tags = val
+}
+func (p *ChatObject) SetUserId(val string) {
+	p.UserId = val
+}
+
+func (p *ChatObject) IsSetCoreNeeds() bool {
+	return p.CoreNeeds != nil
+}
+
+func (p *ChatObject) IsSetPersonality() bool {
+	return p.Personality != nil
+}
+
+func (p *ChatObject) IsSetTags() bool {
+	return p.Tags != nil
+}
 
 func (p *ChatObject) String() string {
 	if p == nil {
@@ -190,6 +249,10 @@ var fieldIDToName_ChatObject = map[int16]string{
 	3: "avatar",
 	4: "position",
 	5: "relation",
+	6: "core_needs",
+	7: "personality",
+	8: "tags",
+	9: "userId",
 }
 
 type FileItem struct {
@@ -1024,7 +1087,8 @@ var fieldIDToName_GetFileListByMessageIdResp = map[int16]string{
 }
 
 type DeleteChatObjectReq struct {
-	Id string `thrift:"id,1,required" frugal:"1,required,string" json:"id"`
+	Id     string `thrift:"id,1,required" frugal:"1,required,string" json:"id"`
+	UserId string `thrift:"user_id,2,required" frugal:"2,required,string" json:"user_id"`
 }
 
 func NewDeleteChatObjectReq() *DeleteChatObjectReq {
@@ -1037,8 +1101,15 @@ func (p *DeleteChatObjectReq) InitDefault() {
 func (p *DeleteChatObjectReq) GetId() (v string) {
 	return p.Id
 }
+
+func (p *DeleteChatObjectReq) GetUserId() (v string) {
+	return p.UserId
+}
 func (p *DeleteChatObjectReq) SetId(val string) {
 	p.Id = val
+}
+func (p *DeleteChatObjectReq) SetUserId(val string) {
+	p.UserId = val
 }
 
 func (p *DeleteChatObjectReq) String() string {
@@ -1050,6 +1121,7 @@ func (p *DeleteChatObjectReq) String() string {
 
 var fieldIDToName_DeleteChatObjectReq = map[int16]string{
 	1: "id",
+	2: "user_id",
 }
 
 type DeleteChatObjectResp struct {

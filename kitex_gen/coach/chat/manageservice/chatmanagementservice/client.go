@@ -4,8 +4,8 @@ package chatmanagementservice
 
 import (
 	"context"
-	base "github.com/AI-MyPresenceing/coach-idl/kitex_gen/coach/chat/base"
 	manageservice "github.com/AI-MyPresenceing/coach-idl/kitex_gen/coach/chat/manageservice"
+	base "github.com/AI-MyPresenceing/coach-idl/kitex_gen/coach/common/base"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )

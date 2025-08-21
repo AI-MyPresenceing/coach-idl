@@ -1,6 +1,6 @@
 namespace go coach.chat.manageservice
 
-include "base.thrift"
+include "common_base.thrift"
 
 struct ChatItem {
     1: i64 id;
@@ -19,6 +19,10 @@ struct ChatObject {
     3: string avatar;
     4: string position;
     5: string relation;
+    6: optional string core_needs;
+    7: optional string personality;
+    8: optional list<string> tags;
+    9: required string userId;
 }
 
 // cos桶文件链接
@@ -38,7 +42,7 @@ struct GetChatObjectListReq {
 // 获取聊天对象列表响应
 struct GetChatObjectListResp {
     1: list<ChatObject> chat_object_list
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 获取聊天内容列表请求
@@ -49,14 +53,14 @@ struct GetChatListByIdReq {
 // 获取聊天内容列表响应
 struct GetChatListByIdResp {
     1: list<ChatItem> chat_list
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 新增聊天内容响应
 struct CreateChatItemRsp {
     1: string session_id;  // 改为session_id
     2: string message_id;  // 新增：返回生成的message_id
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 会话数据结构
@@ -87,7 +91,7 @@ struct CreateChatSessionResp {
     2: string title
     3: string object_id
     4: string created_at
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 获取会话列表请求/响应
@@ -97,7 +101,7 @@ struct GetChatSessionListReq {
 
 struct GetChatSessionListResp {
     1: list<ChatSessionDTO> sessions
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 上传文件请求(文件流形式上传)
@@ -111,7 +115,7 @@ struct UploadFileReq {
 // 上传文件响应
 struct UploadFileResp {
     1: string file_id
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 获取文件列表请求
@@ -122,18 +126,19 @@ struct GetFileListByMessageIdReq {
 // 获取文件列表响应
 struct GetFileListByMessageIdResp {
     1: list<FileItem> file_list
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 // 删除聊天对象请求
 struct DeleteChatObjectReq {
-    1: required string id
+    1: required string id;
+    2: required string user_id;
 }
 
 // 删除聊天对象响应
 struct DeleteChatObjectResp {
     1: bool success
-    255: base.BaseResp baseResp
+    255: common_base.BaseResp baseResp
 }
 
 
@@ -141,7 +146,7 @@ service ChatManagementService {
     // 获取聊天对象列表
     GetChatObjectListResp GetChatObjectList(1: GetChatObjectListReq req)
     // 新增（编辑）聊天对象
-    base.BaseResp EditChatObject(1: ChatObject req)
+    common_base.BaseResp EditChatObject(1: ChatObject req)
     // 获取聊天内容列表
     GetChatListByIdResp GetChatListById(1: GetChatListByIdReq req)
     // 新增聊天内容
