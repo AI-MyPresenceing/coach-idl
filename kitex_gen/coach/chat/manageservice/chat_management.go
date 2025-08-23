@@ -137,6 +137,7 @@ type ChatObject struct {
 	Personality *string  `thrift:"personality,7,optional" frugal:"7,optional,string" json:"personality,omitempty"`
 	Tags        []string `thrift:"tags,8,optional" frugal:"8,optional,list<string>" json:"tags,omitempty"`
 	UserId      string   `thrift:"userId,9,required" frugal:"9,required,string" json:"userId"`
+	HasHistory  bool     `thrift:"has_history,10" frugal:"10,default,bool" json:"has_history"`
 }
 
 func NewChatObject() *ChatObject {
@@ -196,6 +197,10 @@ func (p *ChatObject) GetTags() (v []string) {
 func (p *ChatObject) GetUserId() (v string) {
 	return p.UserId
 }
+
+func (p *ChatObject) GetHasHistory() (v bool) {
+	return p.HasHistory
+}
 func (p *ChatObject) SetId(val string) {
 	p.Id = val
 }
@@ -223,6 +228,9 @@ func (p *ChatObject) SetTags(val []string) {
 func (p *ChatObject) SetUserId(val string) {
 	p.UserId = val
 }
+func (p *ChatObject) SetHasHistory(val bool) {
+	p.HasHistory = val
+}
 
 func (p *ChatObject) IsSetCoreNeeds() bool {
 	return p.CoreNeeds != nil
@@ -244,15 +252,16 @@ func (p *ChatObject) String() string {
 }
 
 var fieldIDToName_ChatObject = map[int16]string{
-	1: "id",
-	2: "name",
-	3: "avatar",
-	4: "position",
-	5: "relation",
-	6: "core_needs",
-	7: "personality",
-	8: "tags",
-	9: "userId",
+	1:  "id",
+	2:  "name",
+	3:  "avatar",
+	4:  "position",
+	5:  "relation",
+	6:  "core_needs",
+	7:  "personality",
+	8:  "tags",
+	9:  "userId",
+	10: "has_history",
 }
 
 type FileItem struct {

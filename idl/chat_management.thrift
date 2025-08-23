@@ -23,6 +23,7 @@ struct ChatObject {
     7: optional string personality;
     8: optional list<string> tags;
     9: required string userId;
+    10: bool has_history;
 }
 
 // cos桶文件链接
