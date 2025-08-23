@@ -917,10 +917,9 @@ var fieldIDToName_GetChatSessionListResp = map[int16]string{
 }
 
 type UploadFileReq struct {
-	MessageId string `thrift:"message_id,1,required" frugal:"1,required,string" json:"message_id"`
-	FileData  []byte `thrift:"file_data,2,required" frugal:"2,required,binary" json:"file_data"`
-	FileName  string `thrift:"file_name,3,required" frugal:"3,required,string" json:"file_name"`
-	FileType  string `thrift:"file_type,4,required" frugal:"4,required,string" json:"file_type"`
+	FileData []byte `thrift:"file_data,1,required" frugal:"1,required,binary" json:"file_data"`
+	FileName string `thrift:"file_name,2,required" frugal:"2,required,string" json:"file_name"`
+	FileType string `thrift:"file_type,3,required" frugal:"3,required,string" json:"file_type"`
 }
 
 func NewUploadFileReq() *UploadFileReq {
@@ -928,10 +927,6 @@ func NewUploadFileReq() *UploadFileReq {
 }
 
 func (p *UploadFileReq) InitDefault() {
-}
-
-func (p *UploadFileReq) GetMessageId() (v string) {
-	return p.MessageId
 }
 
 func (p *UploadFileReq) GetFileData() (v []byte) {
@@ -944,9 +939,6 @@ func (p *UploadFileReq) GetFileName() (v string) {
 
 func (p *UploadFileReq) GetFileType() (v string) {
 	return p.FileType
-}
-func (p *UploadFileReq) SetMessageId(val string) {
-	p.MessageId = val
 }
 func (p *UploadFileReq) SetFileData(val []byte) {
 	p.FileData = val
@@ -966,10 +958,9 @@ func (p *UploadFileReq) String() string {
 }
 
 var fieldIDToName_UploadFileReq = map[int16]string{
-	1: "message_id",
-	2: "file_data",
-	3: "file_name",
-	4: "file_type",
+	1: "file_data",
+	2: "file_name",
+	3: "file_type",
 }
 
 type UploadFileResp struct {

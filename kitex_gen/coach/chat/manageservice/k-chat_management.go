@@ -3334,7 +3334,6 @@ func (p *UploadFileReq) FastRead(buf []byte) (int, error) {
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetMessageId bool = false
 	var issetFileData bool = false
 	var issetFileName bool = false
 	var issetFileType bool = false
@@ -3355,7 +3354,7 @@ func (p *UploadFileReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetMessageId = true
+				issetFileData = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3370,7 +3369,7 @@ func (p *UploadFileReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetFileData = true
+				issetFileName = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3381,21 +3380,6 @@ func (p *UploadFileReq) FastRead(buf []byte) (int, error) {
 		case 3:
 			if fieldTypeId == thrift.STRING {
 				l, err = p.FastReadField3(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-				issetFileName = true
-			} else {
-				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField4(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -3417,23 +3401,18 @@ func (p *UploadFileReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetMessageId {
+	if !issetFileData {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetFileData {
+	if !issetFileName {
 		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetFileName {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetFileType {
-		fieldId = 4
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -3450,20 +3429,6 @@ RequiredFieldNotSetError:
 func (p *UploadFileReq) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	var _field string
-	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		_field = v
-	}
-	p.MessageId = _field
-	return offset, nil
-}
-
-func (p *UploadFileReq) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
 	var _field []byte
 	if v, l, err := thrift.Binary.ReadBinary(buf[offset:]); err != nil {
 		return offset, err
@@ -3476,7 +3441,7 @@ func (p *UploadFileReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UploadFileReq) FastReadField3(buf []byte) (int, error) {
+func (p *UploadFileReq) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -3490,7 +3455,7 @@ func (p *UploadFileReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UploadFileReq) FastReadField4(buf []byte) (int, error) {
+func (p *UploadFileReq) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -3514,7 +3479,6 @@ func (p *UploadFileReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 		offset += p.fastWriteField1(buf[offset:], w)
 		offset += p.fastWriteField2(buf[offset:], w)
 		offset += p.fastWriteField3(buf[offset:], w)
-		offset += p.fastWriteField4(buf[offset:], w)
 	}
 	offset += thrift.Binary.WriteFieldStop(buf[offset:])
 	return offset
@@ -3526,7 +3490,6 @@ func (p *UploadFileReq) BLength() int {
 		l += p.field1Length()
 		l += p.field2Length()
 		l += p.field3Length()
-		l += p.field4Length()
 	}
 	l += thrift.Binary.FieldStopLength()
 	return l
@@ -3535,27 +3498,20 @@ func (p *UploadFileReq) BLength() int {
 func (p *UploadFileReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
-	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.MessageId)
+	offset += thrift.Binary.WriteBinaryNocopy(buf[offset:], w, []byte(p.FileData))
 	return offset
 }
 
 func (p *UploadFileReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 2)
-	offset += thrift.Binary.WriteBinaryNocopy(buf[offset:], w, []byte(p.FileData))
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.FileName)
 	return offset
 }
 
 func (p *UploadFileReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 3)
-	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.FileName)
-	return offset
-}
-
-func (p *UploadFileReq) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.FileType)
 	return offset
 }
@@ -3563,25 +3519,18 @@ func (p *UploadFileReq) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
 func (p *UploadFileReq) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.StringLengthNocopy(p.MessageId)
+	l += thrift.Binary.BinaryLengthNocopy([]byte(p.FileData))
 	return l
 }
 
 func (p *UploadFileReq) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.BinaryLengthNocopy([]byte(p.FileData))
-	return l
-}
-
-func (p *UploadFileReq) field3Length() int {
-	l := 0
-	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.FileName)
 	return l
 }
 
-func (p *UploadFileReq) field4Length() int {
+func (p *UploadFileReq) field3Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.FileType)

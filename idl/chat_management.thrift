@@ -107,10 +107,9 @@ struct GetChatSessionListResp {
 
 // 上传文件请求(文件流形式上传)
 struct UploadFileReq {
-    1: required string message_id
-    2: required binary file_data
-    3: required string file_name
-    4: required string file_type
+    1: required binary file_data
+    2: required string file_name
+    3: required string file_type
 }
 
 // 上传文件响应
