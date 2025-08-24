@@ -9,12 +9,13 @@ import (
 )
 
 type User struct {
-	UserId   string `thrift:"userId,1" frugal:"1,default,string" json:"userId"`
-	Nickname string `thrift:"nickname,2" frugal:"2,default,string" json:"nickname"`
-	Phone    string `thrift:"phone,3" frugal:"3,default,string" json:"phone"`
-	Position string `thrift:"position,4" frugal:"4,default,string" json:"position"`
-	Industry string `thrift:"industry,5" frugal:"5,default,string" json:"industry"`
-	Status   int32  `thrift:"status,6" frugal:"6,default,i32" json:"status"`
+	UserId   string  `thrift:"userId,1" frugal:"1,default,string" json:"userId"`
+	Nickname string  `thrift:"nickname,2" frugal:"2,default,string" json:"nickname"`
+	Phone    string  `thrift:"phone,3" frugal:"3,default,string" json:"phone"`
+	Position string  `thrift:"position,4" frugal:"4,default,string" json:"position"`
+	Industry string  `thrift:"industry,5" frugal:"5,default,string" json:"industry"`
+	Status   int32   `thrift:"status,6" frugal:"6,default,i32" json:"status"`
+	TeamRole *string `thrift:"teamRole,7,optional" frugal:"7,optional,string" json:"teamRole,omitempty"`
 }
 
 func NewUser() *User {
@@ -47,6 +48,15 @@ func (p *User) GetIndustry() (v string) {
 func (p *User) GetStatus() (v int32) {
 	return p.Status
 }
+
+var User_TeamRole_DEFAULT string
+
+func (p *User) GetTeamRole() (v string) {
+	if !p.IsSetTeamRole() {
+		return User_TeamRole_DEFAULT
+	}
+	return *p.TeamRole
+}
 func (p *User) SetUserId(val string) {
 	p.UserId = val
 }
@@ -65,6 +75,13 @@ func (p *User) SetIndustry(val string) {
 func (p *User) SetStatus(val int32) {
 	p.Status = val
 }
+func (p *User) SetTeamRole(val *string) {
+	p.TeamRole = val
+}
+
+func (p *User) IsSetTeamRole() bool {
+	return p.TeamRole != nil
+}
 
 func (p *User) String() string {
 	if p == nil {
@@ -80,6 +97,7 @@ var fieldIDToName_User = map[int16]string{
 	4: "position",
 	5: "industry",
 	6: "status",
+	7: "teamRole",
 }
 
 type PointsTransaction struct {
@@ -179,6 +197,7 @@ type RegisterUserReq struct {
 	Phone    string  `thrift:"phone,2,required" frugal:"2,required,string" json:"phone"`
 	Position *string `thrift:"position,3,optional" frugal:"3,optional,string" json:"position,omitempty"`
 	Industry *string `thrift:"industry,4,optional" frugal:"4,optional,string" json:"industry,omitempty"`
+	TeamRole *string `thrift:"teamRole,5,optional" frugal:"5,optional,string" json:"teamRole,omitempty"`
 }
 
 func NewRegisterUserReq() *RegisterUserReq {
@@ -213,6 +232,15 @@ func (p *RegisterUserReq) GetIndustry() (v string) {
 	}
 	return *p.Industry
 }
+
+var RegisterUserReq_TeamRole_DEFAULT string
+
+func (p *RegisterUserReq) GetTeamRole() (v string) {
+	if !p.IsSetTeamRole() {
+		return RegisterUserReq_TeamRole_DEFAULT
+	}
+	return *p.TeamRole
+}
 func (p *RegisterUserReq) SetNickname(val string) {
 	p.Nickname = val
 }
@@ -225,6 +253,9 @@ func (p *RegisterUserReq) SetPosition(val *string) {
 func (p *RegisterUserReq) SetIndustry(val *string) {
 	p.Industry = val
 }
+func (p *RegisterUserReq) SetTeamRole(val *string) {
+	p.TeamRole = val
+}
 
 func (p *RegisterUserReq) IsSetPosition() bool {
 	return p.Position != nil
@@ -232,6 +263,10 @@ func (p *RegisterUserReq) IsSetPosition() bool {
 
 func (p *RegisterUserReq) IsSetIndustry() bool {
 	return p.Industry != nil
+}
+
+func (p *RegisterUserReq) IsSetTeamRole() bool {
+	return p.TeamRole != nil
 }
 
 func (p *RegisterUserReq) String() string {
@@ -246,6 +281,7 @@ var fieldIDToName_RegisterUserReq = map[int16]string{
 	2: "phone",
 	3: "position",
 	4: "industry",
+	5: "teamRole",
 }
 
 type RegisterUserResp struct {
@@ -385,6 +421,7 @@ type UpdateUserReq struct {
 	Nickname *string `thrift:"nickname,2,optional" frugal:"2,optional,string" json:"nickname,omitempty"`
 	Position *string `thrift:"position,3,optional" frugal:"3,optional,string" json:"position,omitempty"`
 	Industry *string `thrift:"industry,4,optional" frugal:"4,optional,string" json:"industry,omitempty"`
+	TeamRole *string `thrift:"teamRole,5,optional" frugal:"5,optional,string" json:"teamRole,omitempty"`
 }
 
 func NewUpdateUserReq() *UpdateUserReq {
@@ -424,6 +461,15 @@ func (p *UpdateUserReq) GetIndustry() (v string) {
 	}
 	return *p.Industry
 }
+
+var UpdateUserReq_TeamRole_DEFAULT string
+
+func (p *UpdateUserReq) GetTeamRole() (v string) {
+	if !p.IsSetTeamRole() {
+		return UpdateUserReq_TeamRole_DEFAULT
+	}
+	return *p.TeamRole
+}
 func (p *UpdateUserReq) SetUserId(val string) {
 	p.UserId = val
 }
@@ -435,6 +481,9 @@ func (p *UpdateUserReq) SetPosition(val *string) {
 }
 func (p *UpdateUserReq) SetIndustry(val *string) {
 	p.Industry = val
+}
+func (p *UpdateUserReq) SetTeamRole(val *string) {
+	p.TeamRole = val
 }
 
 func (p *UpdateUserReq) IsSetNickname() bool {
@@ -449,6 +498,10 @@ func (p *UpdateUserReq) IsSetIndustry() bool {
 	return p.Industry != nil
 }
 
+func (p *UpdateUserReq) IsSetTeamRole() bool {
+	return p.TeamRole != nil
+}
+
 func (p *UpdateUserReq) String() string {
 	if p == nil {
 		return "<nil>"
@@ -461,6 +514,7 @@ var fieldIDToName_UpdateUserReq = map[int16]string{
 	2: "nickname",
 	3: "position",
 	4: "industry",
+	5: "teamRole",
 }
 
 type GetPointsBalanceReq struct {
@@ -781,6 +835,7 @@ var fieldIDToName_GetTransactionHistoryResp = map[int16]string{
 type LoginOrRegisterByPhoneReq struct {
 	Phone    string  `thrift:"phone,1,required" frugal:"1,required,string" json:"phone"`
 	Nickname *string `thrift:"nickname,2,optional" frugal:"2,optional,string" json:"nickname,omitempty"`
+	TeamRole *string `thrift:"teamRole,3,optional" frugal:"3,optional,string" json:"teamRole,omitempty"`
 }
 
 func NewLoginOrRegisterByPhoneReq() *LoginOrRegisterByPhoneReq {
@@ -802,15 +857,31 @@ func (p *LoginOrRegisterByPhoneReq) GetNickname() (v string) {
 	}
 	return *p.Nickname
 }
+
+var LoginOrRegisterByPhoneReq_TeamRole_DEFAULT string
+
+func (p *LoginOrRegisterByPhoneReq) GetTeamRole() (v string) {
+	if !p.IsSetTeamRole() {
+		return LoginOrRegisterByPhoneReq_TeamRole_DEFAULT
+	}
+	return *p.TeamRole
+}
 func (p *LoginOrRegisterByPhoneReq) SetPhone(val string) {
 	p.Phone = val
 }
 func (p *LoginOrRegisterByPhoneReq) SetNickname(val *string) {
 	p.Nickname = val
 }
+func (p *LoginOrRegisterByPhoneReq) SetTeamRole(val *string) {
+	p.TeamRole = val
+}
 
 func (p *LoginOrRegisterByPhoneReq) IsSetNickname() bool {
 	return p.Nickname != nil
+}
+
+func (p *LoginOrRegisterByPhoneReq) IsSetTeamRole() bool {
+	return p.TeamRole != nil
 }
 
 func (p *LoginOrRegisterByPhoneReq) String() string {
@@ -823,6 +894,7 @@ func (p *LoginOrRegisterByPhoneReq) String() string {
 var fieldIDToName_LoginOrRegisterByPhoneReq = map[int16]string{
 	1: "phone",
 	2: "nickname",
+	3: "teamRole",
 }
 
 type LoginOrRegisterByPhoneResp struct {

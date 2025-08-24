@@ -10,6 +10,7 @@ struct User {
     4: string position
     5: string industry
     6: i32 status
+    7: optional string teamRole
 }
 
 // 积分交易记录结构
@@ -30,6 +31,7 @@ struct RegisterUserReq {
     2: required string phone
     3: optional string position
     4: optional string industry
+    5: optional string teamRole
 }
 
 // 用户注册响应
@@ -55,6 +57,7 @@ struct UpdateUserReq {
     2: optional string nickname
     3: optional string position
     4: optional string industry
+    5: optional string teamRole
 }
 
 // 获取积分余额请求
@@ -100,6 +103,7 @@ struct GetTransactionHistoryResp {
 struct LoginOrRegisterByPhoneReq {
     1: required string phone
     2: optional string nickname
+    3: optional string teamRole
 }
 
 // 手机号登录或注册响应
